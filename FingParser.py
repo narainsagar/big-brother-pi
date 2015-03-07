@@ -1,11 +1,11 @@
 from Base import Node, NODE_STATUS
 from abc import ABCMeta, abstractmethod
-from IParser import ParserBase
+from IParser import IParser
 import os
 import re
 
-class FingParser(ParserBase):
-    def parserMain(self):
+class FingParser(IParser):
+    def parse(self):
         activeNodes = []
         ret = os.system("sudo fing -r 1 -o table,csv,discovery.txt")
         f = open('discovery.txt', 'r').readlines()
@@ -15,8 +15,5 @@ class FingParser(ParserBase):
                 mac_addr = f[i].split(";")[5]
                 manufacturer_name = f[i].split(";")[6].split('\n')[0]
                 activeNodes.append(Node(ip_addr, mac_addr, NODE_STATUS.UP, manufacturer_name))
-        for node in activeNodes:
-            print str(node)
-        return activeNodes
 
-FingParser().parserMain()
+        return activeNodes

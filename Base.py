@@ -1,6 +1,3 @@
-__author__ = 'abdulqadir'
-from abc import ABCMeta, abstractmethod
-
 class Node:
     def __init__(self, ip_addr, mac_addr, node_status, manufacturer_name):
         self.ip_addr = ip_addr

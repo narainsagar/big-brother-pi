@@ -1,7 +1,8 @@
 from abc import ABCMeta, abstractmethod
 
-class ParserBase(object):
+class IParser(object):
     __metaclass__ = ABCMeta
+
     @abstractmethod
-    def parserMain(self):
+    def parse(self):
         pass
