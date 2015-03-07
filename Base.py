@@ -16,6 +16,3 @@ class ShellLog:
     def __init__(self, error_log, discovery_log):
         self.error_log = error_log
         self.discovery_log = discovery_log
-
-
-
