@@ -11,9 +11,11 @@ class FingParser(IParser):
         f = open('discovery.txt', 'r').readlines()
         if ret == 0:
             for i in range(0, len(f)):
-                ip_addr = f[i].split(";")[0]
-                mac_addr = f[i].split(";")[5]
-                manufacturer_name = f[i].split(";")[6].split('\n')[0]
-                activeNodes.append(Node(ip_addr, mac_addr, NODE_STATUS.UP, manufacturer_name))
+                node = Node()
+                node.ip_addr = f[i].split(";")[0]
+                node.mac_addr = f[i].split(";")[5]
+                node.manufacturer_name = f[i].split(";")[6].split('\n')[0]
+                node.node_status = NODE_STATUS.UP
+                activeNodes.append(node)
 
         return activeNodes

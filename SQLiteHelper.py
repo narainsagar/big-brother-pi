@@ -32,7 +32,11 @@ class SQLiteHelper(IDBHelper):
             activeNodes = []
             cursor = self.conn.execute("SELECT * FROM active_nodes")
             for row in cursor:
-                activeNodes.append(Node(row["ip_addr"], row["mac_addr"], NODE_STATUS.UP, row["manufacturer_name"]))
+                node = Node()
+                node.ip_addr = row["ip_addr"]
+                node.mac_addr = row["mac_addr"]
+                node.manufacturer_name = row["manufacturer_name"]
+                activeNodes.append(node)
             return activeNodes
         except sqlite3.Error, msg:
             print msg #TODO: use logger to log
