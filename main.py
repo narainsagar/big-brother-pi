@@ -1,35 +1,39 @@
 from FingParser import FingParser
+from FingShellHandler import FingShellHandler
 from SQLiteHelper import SQLiteHelper
 from Base import Node, NODE_STATUS
 from CURLMessage import CURLMessage
 from CURLMessageFactory import CURLMessageFactory
 from MessageDispatcher import MessageDispatcher
 
+
 class Main:
     def __init__(self, parser, dbHelper):
-        self.parser = parser;
+        self.parser = parser
         self.dbHelper = dbHelper
         self.dbHelper.init()
 
     def startService(self):
-        currActiveNodes = self.parser.parse()
-        prevActiveNodes = self.dbHelper.getActiveNodes()
+        ret = FingShellHandler().execute()
+        if ret != None:
+            currActiveNodes = self.parser.parse(ret)
+            prevActiveNodes = self.dbHelper.getActiveNodes()
 
-        nodesDown = self.__getNodesDown(currActiveNodes, prevActiveNodes)
-        nodesUp = self.__getNodesUp(currActiveNodes, prevActiveNodes)
+            nodesDown = self.__getNodesDown(currActiveNodes, prevActiveNodes)
+            nodesUp = self.__getNodesUp(currActiveNodes, prevActiveNodes)
 
-        msgFactory = CURLMessageFactory()
-        msgDispatcher = MessageDispatcher()
+            msgFactory = CURLMessageFactory()
+            msgDispatcher = MessageDispatcher()
 
-        for node in nodesDown:
-            msg = msgFactory.createNodeMsg(node)
-            msgDispatcher.dispatch(msg)
+            for node in nodesDown:
+                msg = msgFactory.createNodeMsg(node)
+                msgDispatcher.dispatch(msg)
 
-        for node in nodesUp:
-            msg = msgFactory.createNodeMsg(node)
-            msgDispatcher.dispatch(msg)
+            for node in nodesUp:
+                msg = msgFactory.createNodeMsg(node)
+                msgDispatcher.dispatch(msg)
 
-        self.dbHelper.saveActiveNodes(currActiveNodes)
+            self.dbHelper.saveActiveNodes(currActiveNodes)
 
 
     def __getNodesUp(self, currActiveNodes, prevActiveNodes):
