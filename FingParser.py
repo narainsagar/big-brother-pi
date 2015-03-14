@@ -11,7 +11,7 @@ class FingParser(IParser):
     def parse(self, shellLog):
         activeNodes=[]
         try:
-            f = open(shellLog.dsiscovery_log, 'r').readlines()
+            f = open(shellLog.discovery_log, 'r').readlines()
             for i in range(0, len(f)):
                 node = Node()
                 node.ip_addr = f[i].split(";")[0]
@@ -35,5 +35,5 @@ class FingParser(IParser):
             print 'FILE:'
             print body
 
-a = FingParser()
-a.parse(FingShellHandler().execute())
+# a = FingParser()
+# a.parse(FingShellHandler().execute())
