@@ -5,13 +5,14 @@ from Base import Node, NODE_STATUS
 from CURLMessage import CURLMessage
 from CURLMessageFactory import CURLMessageFactory
 from MessageDispatcher import MessageDispatcher
+from ServiceExceptions import DispatcherFailed
 
 
 class Main:
     def __init__(self, parser, dbHelper):
         self.parser = parser
         self.dbHelper = dbHelper
-        self.dbHelper.init()
+        self.dbHelper.init(1)
 
     def startService(self):
         ret = FingShellHandler().execute()
@@ -25,15 +26,19 @@ class Main:
             msgFactory = CURLMessageFactory()
             msgDispatcher = MessageDispatcher()
 
-            for node in nodesDown:
-                msg = msgFactory.createNodeMsg(node)
-                msgDispatcher.dispatch(msg)
+            nodeList = nodesDown + nodesUp
+            if nodeList.__len__() > 0:
+                msg = msgFactory.createNodeMsg(nodeList)
+                try:
+                    msgDispatcher.dispatch(msg)
+                except DispatcherFailed as e:
+                    print e
+                    self.dbHelper.saveMessages([msg])
 
-            for node in nodesUp:
-                msg = msgFactory.createNodeMsg(node)
-                msgDispatcher.dispatch(msg)
 
             self.dbHelper.saveActiveNodes(currActiveNodes)
+        else:
+            print "shell execution failed!"
 
 
     def __getNodesUp(self, currActiveNodes, prevActiveNodes):

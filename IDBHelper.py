@@ -22,7 +22,3 @@ class IDBHelper(object):
     @abstractmethod
     def getMessages(self):
         pass
-
-    @abstractmethod
-    def clearMessages(self):
-        pass

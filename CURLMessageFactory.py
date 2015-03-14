@@ -4,12 +4,13 @@ import json
 import time
 
 class CURLMessageFactory:
-    def createNodeMsg(self, node):
+    def createNodeMsg(self, nodeList):
         curlMsg = CURLMessage()
         curlMsg.setHeaders(['Content-Type: application/json'])
         curlMsg.setPath('http://localhost:8888/pistuff/')
-        msgDict = node.__dict__
-        msgDict['created'] = curlMsg.getCreated()
-        msgDict['type'] = 'node'
-        curlMsg.setBody(json.dumps(msgDict))
+        nodeDict = []
+        for node in nodeList:
+            nodeDict.append(node.__dict__)
+        JSONDict = {'created': str(time.time()), 'type' : 'node', 'nodes': nodeDict}
+        curlMsg.setBody(json.dumps(JSONDict))
         return curlMsg
