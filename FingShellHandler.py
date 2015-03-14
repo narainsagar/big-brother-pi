@@ -1,4 +1,3 @@
-__author__ = 'analytics'
 from Base import ShellLog
 from abc import ABCMeta, abstractmethod
 from IShellHandler import IShellHandler

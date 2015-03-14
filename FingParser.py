@@ -5,12 +5,13 @@ import os
 import re
 import logging
 from FingShellHandler import FingShellHandler
+from Logger import Logger
 
 class FingParser(IParser):
     def parse(self, shellLog):
         activeNodes=[]
         try:
-            f = open(shellLog.discovery_log, 'r').readlines()
+            f = open(shellLog.dsiscovery_log, 'r').readlines()
             for i in range(0, len(f)):
                 node = Node()
                 node.ip_addr = f[i].split(";")[0]
@@ -21,14 +22,11 @@ class FingParser(IParser):
 
             return activeNodes
         except:
-            #print("Can not Open File")
+            print("Can not Open File")
 
-            LOG_FILENAME = 'parser_error_logging.out'
-            logging.basicConfig(filename=LOG_FILENAME,
-                                level=logging.DEBUG,
-                                )
+            b = Logger().log_error()
             logging.error("Cant Open File")
-            f = open(LOG_FILENAME, 'rt')
+            f = open(b, 'rt')
             try:
                 body = f.read()
             finally:
@@ -36,3 +34,6 @@ class FingParser(IParser):
 
             print 'FILE:'
             print body
+
+a = FingParser()
+a.parse(FingShellHandler().execute())
