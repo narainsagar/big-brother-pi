@@ -4,7 +4,6 @@ class CURLMessage:
     __headers = {}
     __body = ""
     __url = ""
-    __created = str(time.time())
 
     def setHeaders(self, dict):
         self.__headers = dict
@@ -23,9 +22,3 @@ class CURLMessage:
 
     def getPath(self):
         return self.__url
-
-    def setCreated(self, unixTimestamp):
-        self.__created = unixTimestamp
-
-    def getCreated(self):
-        return self.__created

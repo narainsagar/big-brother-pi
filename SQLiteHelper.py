@@ -1,25 +1,37 @@
 from Base import Node, NODE_STATUS
 from IDBHelper import IDBHelper
+from CURLMessage import CURLMessage
 import sqlite3
 import os
 
 class SQLiteHelper(IDBHelper):
     db_path = "service.db"
 
+    def __init__(self):
+        self.tables = []
+        self.tables.append("CREATE TABLE active_nodes (ip_addr TEXT NOT NULL, mac_addr TEXT NOT NULL, manufacturer_name TEXT)")
+        self.tables.append("CREATE TABLE messages (headers TEXT, body TEXT)")
+
+    def dropTables(self):
+        cursor = self.conn.execute("SELECT name FROM sqlite_master WHERE type='table';")
+        for row in cursor:
+            self.conn.execute("DROP TABLE IF EXISTS " + row['name'])
+        self.conn.commit()
+
     def createTables(self):
-        try:
-            self.conn.execute("CREATE TABLE active_nodes (ip_addr TEXT NOT NULL, mac_addr TEXT NOT NULL, manufacturer_name TEXT)")
-        except sqlite3.Error, msg:
-            print msg #TODO: use logger to log
+        for query in self.tables:
+            self.conn.execute(query)
+        self.conn.commit()
 
-
-    def init(self):
+    def init(self, version):
         try:
             self.conn = sqlite3.connect(self.db_path)
             self.conn.row_factory = sqlite3.Row
-            cursor = self.conn.execute("select count(*) AS table_count from sqlite_master where type = \"table\";")
+            cursor = self.conn.execute("PRAGMA user_version")
             row = cursor.next()
-            if row["table_count"] == 0:
+            if row["user_version"] < version:
+                self.conn.execute("PRAGMA user_version = " + str(version))
+                self.dropTables()
                 self.createTables()
         except sqlite3.Error, msg:
             print msg #TODO: use logger to log
@@ -50,11 +62,25 @@ class SQLiteHelper(IDBHelper):
         except (sqlite3.Error, AttributeError, TypeError), msg:
             print msg #TODO: use logger to log
 
-    def saveMessages(self):
-        pass
+    def saveMessages(self, msgList):
+        try:
+            for msg in msgList:
+                self.conn.execute("INSERT INTO messages (headers, body) VALUES (?,?)", (";;".join(msg.getHeaders()), msg.getBody()))
+            self.conn.commit()
+        except (sqlite3.Error, AttributeError, TypeError), msg:
+            print msg
 
     def getMessages(self):
-        pass
-
-    def clearMessages(self):
-        pass
+        msgList = []
+        try:
+            cursor = self.conn.execute("SELECT * FROM messages")
+            for row in cursor:
+                msg = CURLMessage()
+                msg.setHeaders(row["headers"].split(";;"))
+                msg.setBody(row["body"])
+                msgList.append(msg)
+            self.conn.execute("DELETE FROM messages")
+            self.conn.commit()
+            return msgList
+        except sqlite3.error, msg:
+            print msg
