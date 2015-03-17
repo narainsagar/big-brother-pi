@@ -22,18 +22,8 @@ class FingParser(IParser):
 
             return activeNodes
         except:
-            print("Can not Open File")
-
-            b = Logger().log_error()
-            logging.error("Cant Open File")
-            f = open(b, 'rt')
-            try:
-                body = f.read()
-            finally:
-                f.close()
-
-            print 'FILE:'
-            print body
+            #print("Can not Open File")
+            Logger().log_error("Cannot Open File")
 
 # a = FingParser()
 # a.parse(FingShellHandler().execute())

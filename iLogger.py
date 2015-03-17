@@ -6,5 +6,5 @@ class ILogger(object):
     # def log_operation(self):
     #     pass
     @abstractmethod
-    def log_error(self):
+    def log_error(self, Message):
         pass
