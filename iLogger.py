@@ -8,3 +8,6 @@ class ILogger(object):
     @abstractmethod
     def log_error(self, Message):
         pass
+    @abstractmethod
+    def log_debug(self, Message):
+        pass
