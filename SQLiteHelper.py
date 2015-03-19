@@ -1,6 +1,7 @@
 from Base import Node, NODE_STATUS
 from IDBHelper import IDBHelper
 from CURLMessage import CURLMessage
+from ServiceExceptions import DBOpFailed
 import sqlite3
 import os
 
@@ -8,19 +9,17 @@ class SQLiteHelper(IDBHelper):
     db_path = "service.db"
 
     def __init__(self):
-        self.tables = []
-        self.tables.append("CREATE TABLE active_nodes (ip_addr TEXT NOT NULL, mac_addr TEXT NOT NULL, manufacturer_name TEXT)")
-        self.tables.append("CREATE TABLE messages (headers TEXT, body TEXT)")
+        pass
 
-    def dropTables(self):
+    def __dropTables(self):
         cursor = self.conn.execute("SELECT name FROM sqlite_master WHERE type='table';")
         for row in cursor:
             self.conn.execute("DROP TABLE IF EXISTS " + row['name'])
         self.conn.commit()
 
-    def createTables(self):
-        for query in self.tables:
-            self.conn.execute(query)
+    def __createTables(self):
+        self.conn.execute("CREATE TABLE active_nodes (ip_addr TEXT NOT NULL, mac_addr TEXT NOT NULL, manufacturer_name TEXT)")
+        self.conn.execute("CREATE TABLE messages (headers TEXT, body TEXT)")
         self.conn.commit()
 
     def init(self, version):
@@ -31,12 +30,10 @@ class SQLiteHelper(IDBHelper):
             row = cursor.next()
             if row["user_version"] < version:
                 self.conn.execute("PRAGMA user_version = " + str(version))
-                self.dropTables()
-                self.createTables()
-        except sqlite3.Error, msg:
-            print msg #TODO: use logger to log
-        finally:
-            pass #TODO: log operation
+                self.__dropTables()
+                self.__createTables()
+        except Exception, msg:
+            raise DBOpFailed(msg)
 
 
     def getActiveNodes(self):
@@ -50,8 +47,8 @@ class SQLiteHelper(IDBHelper):
                 node.manufacturer_name = row["manufacturer_name"]
                 activeNodes.append(node)
             return activeNodes
-        except sqlite3.Error, msg:
-            print msg #TODO: use logger to log
+        except (sqlite3.Error), msg:
+            raise DBOpFailed(msg)
 
     def saveActiveNodes(self, nodes):
         try:
@@ -59,16 +56,16 @@ class SQLiteHelper(IDBHelper):
             for node in nodes:
                 self.conn.execute("INSERT INTO active_nodes (ip_addr, mac_addr, manufacturer_name) VALUES (?,?,?)", (node.ip_addr, node.mac_addr, node.manufacturer_name))
             self.conn.commit()
-        except (sqlite3.Error, AttributeError, TypeError), msg:
-            print msg #TODO: use logger to log
+        except Exception, msg:
+            raise DBOpFailed(msg)
 
     def saveMessages(self, msgList):
         try:
             for msg in msgList:
                 self.conn.execute("INSERT INTO messages (headers, body) VALUES (?,?)", (";;".join(msg.getHeaders()), msg.getBody()))
             self.conn.commit()
-        except (sqlite3.Error, AttributeError, TypeError), msg:
-            print msg
+        except Exception, msg:
+            raise DBOpFailed(msg)
 
     def getMessages(self):
         msgList = []
@@ -82,5 +79,5 @@ class SQLiteHelper(IDBHelper):
             self.conn.execute("DELETE FROM messages")
             self.conn.commit()
             return msgList
-        except sqlite3.error, msg:
-            print msg
+        except Exception, msg:
+            raise DBOpFailed(msg)

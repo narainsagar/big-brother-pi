@@ -5,20 +5,31 @@ from Base import Node, NODE_STATUS
 from CURLMessage import CURLMessage
 from CURLMessageFactory import CURLMessageFactory
 from MessageDispatcher import MessageDispatcher
-from ServiceExceptions import DispatcherFailed
-
+from ServiceExceptions import DispatcherFailed, ParserFailed, DBOpFailed
 
 class Main:
-    def __init__(self, parser, dbHelper):
+    def __init__(self, shellHandler, parser, dbHelper):
+        self.shellHandler = shellHandler
         self.parser = parser
         self.dbHelper = dbHelper
         self.dbHelper.init(1)
 
     def startService(self):
-        ret = FingShellHandler().execute()
-        if ret != None:
-            currActiveNodes = self.parser.parse(ret)
-            prevActiveNodes = self.dbHelper.getActiveNodes()
+        shellLog = self.shellHandler.execute()
+        if shellLog != None:
+
+            currActiveNodes = []
+            prevActiveNodes = []
+
+            try:
+                currActiveNodes = self.parser.parse(shellLog)
+            except ParserFailed, msg:
+                print msg
+
+            try:
+                prevActiveNodes = self.dbHelper.getActiveNodes()
+            except DBOpFailed, msg:
+                print msg
 
             nodesDown = self.__getNodesDown(currActiveNodes, prevActiveNodes)
             nodesUp = self.__getNodesUp(currActiveNodes, prevActiveNodes)
@@ -27,16 +38,42 @@ class Main:
             msgDispatcher = MessageDispatcher()
 
             nodeList = nodesDown + nodesUp
+
+            prevMessages = []
+            msgList = []
+            failedMsgs = []
+
             if nodeList.__len__() > 0:
-                msg = msgFactory.createNodeMsg(nodeList)
+                msgList.append(msgFactory.createNodeMsg(nodeList))
+
+            try:
+                prevMessages = self.dbHelper.getMessages()
+            except DBOpFailed, msg:
+                print msg
+
+            msgList = msgList + prevMessages
+
+            if msgList.__len__() > 0:
+                curlMsg = msgFactory.createNodeMsgFromMultipleMsgs(msgList)
+                print curlMsg.getBody()
                 try:
-                    msgDispatcher.dispatch(msg)
-                except DispatcherFailed as e:
-                    print e
-                    self.dbHelper.saveMessages([msg])
+                    msgDispatcher.dispatch(curlMsg)
+                except DispatcherFailed, msg:
+                    print msg
+                    failedMsgs = msgList
 
+            if failedMsgs.__len__() > 0:
+                try:
+                    self.dbHelper.saveMessages(failedMsgs)
+                except DBOpFailed, msg:
+                    print msg
+            else:
+                print "All messages dispatched successfully!"
 
-            self.dbHelper.saveActiveNodes(currActiveNodes)
+            try:
+                self.dbHelper.saveActiveNodes(currActiveNodes)
+            except DBOpFailed, msg:
+                print msg
         else:
             print "shell execution failed!"
 
@@ -70,5 +107,5 @@ class Main:
         return nodesDown
 
 
-main = Main(FingParser(), SQLiteHelper())
+main = Main(FingShellHandler(), FingParser(), SQLiteHelper())
 main.startService()
