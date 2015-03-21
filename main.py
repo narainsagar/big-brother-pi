@@ -27,7 +27,7 @@ class Main:
 
             try:
                 currActiveNodes = self.parser.parse(shellLog)
-                self.logger.log_operation("Successfully Parsed Shell Log")
+                self.logger.log_operation("Successfully Parsed Shell Log",)
             except ParserFailed, msg:
                 self.logger.log_error(msg)
 
