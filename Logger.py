@@ -6,9 +6,12 @@ class Logger(ILogger):
 
     def __init__(self):
         self.logger = logging.getLogger()
-        LOG_FILENAME = "log-" + str(datetime.date.today()) + ".txt";
+        LOG_FILENAME = "log-" + str(datetime.date.today()) + ".txt"
         logging.basicConfig(filename=LOG_FILENAME, level=logging.INFO, format=format('%(levelname)s %(asctime)s %(message)s'))
         self.logger.info("service started")
+
+    def returnLogFile(self):
+        return ("log-" + str(datetime.date.today()) + ".txt")
 
     def log_error(self, text):
         self.logger.error(text)

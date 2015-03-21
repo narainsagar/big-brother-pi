@@ -8,6 +8,7 @@ from MessageDispatcher import MessageDispatcher
 from ServiceExceptions import DispatcherFailed, ParserFailed, DBOpFailed
 import logging
 from Logger import Logger
+from Config import Config
 
 class Main:
     def __init__(self, shellHandler, parser, dbHelper, logger):
@@ -16,6 +17,7 @@ class Main:
         self.dbHelper = dbHelper
         self.dbHelper.init(1)
         self.logger = logger
+        self.fileName = logger.returnLogFile()
 
     def startService(self):
         shellLog = self.shellHandler.execute()
@@ -84,6 +86,14 @@ class Main:
                 self.dbHelper.saveActiveNodes(currActiveNodes)
             except DBOpFailed, msg:
                 self.logger.log_error(msg)
+
+            try:
+                self.logger.log_operation("sending log file to server")
+                msgDispatcher.sendCurlFileRequest(self.fileName)
+
+            except:
+                self.logger.log_error("failed to send log file")
+
         else:
             self.logger.log_error("shell execution failed!")
 

@@ -2,6 +2,9 @@ from CURLMessage import CURLMessage
 from ServiceExceptions import DispatcherFailed
 import pycurl
 import cStringIO
+from Config import Config
+import time
+
 
 class MessageDispatcher:
     def dispatch(self, curlMsg):
@@ -33,3 +36,15 @@ class MessageDispatcher:
 
         #TODO: implement rest of the function
 
+    def sendCurlFileRequest(self, fileName):
+        url = Config.serverAddress
+        buf = cStringIO.StringIO()
+        c = pycurl.Curl()
+        c.setopt(c.POST, 1)
+        c.setopt(c.URL, url)
+        c.setopt(c.HTTPHEADER, ['Content-Type: multipart/form-data'])
+        c.setopt(c.HTTPPOST, [('file', (c.FORM_FILE, fileName)), ('created',(str(time.time()))), ('type',('log'))])
+        c.setopt(c.VERBOSE, 1)
+        c.setopt(c.WRITEFUNCTION, buf.write)
+        c.perform()
+        c.close()
