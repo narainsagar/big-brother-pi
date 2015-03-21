@@ -18,7 +18,6 @@ class Main:
         self.logger = logger
 
     def startService(self):
-        self.logger.log_debug("===================================  Service Started  ===================================")
         shellLog = self.shellHandler.execute()
         if shellLog != None:
 
@@ -26,14 +25,14 @@ class Main:
             prevActiveNodes = []
 
             try:
+                self.logger.log_operation("Parsing fing output")
                 currActiveNodes = self.parser.parse(shellLog)
-                self.logger.log_operation("Successfully Parsed Shell Log",)
             except ParserFailed, msg:
                 self.logger.log_error(msg)
 
             try:
+                self.logger.log_operation("fetching previous active nodes from database")
                 prevActiveNodes = self.dbHelper.getActiveNodes()
-                self.logger.log_operation("Successfully got Previous Active Nodes")
             except DBOpFailed, msg:
                 self.logger.log_error(msg)
 
@@ -53,8 +52,8 @@ class Main:
                 msgList.append(msgFactory.createNodeMsg(nodeList))
 
             try:
+                self.logger.log_operation("fetching previous failed messages from database")
                 prevMessages = self.dbHelper.getMessages()
-                self.logger.log_operation("DB Helper Getting Previous Message")
             except DBOpFailed, msg:
                 self.logger.log_error(msg)
 
@@ -64,14 +63,16 @@ class Main:
                 curlMsg = msgFactory.createNodeMsgFromMultipleMsgs(msgList)
 
                 try:
+                    self.logger.log_operation("dispatching the message")
+                    self.logger.log_debug(curlMsg.getBody())
                     msgDispatcher.dispatch(curlMsg)
-                    self.logger.log_operation("Message is being Dispatched")
                 except DispatcherFailed, msg:
                     self.logger.log_error(str(msg))
                     failedMsgs = msgList
 
             if failedMsgs.__len__() > 0:
                 try:
+                    self.logger.log_operation("saving the failed messages into the database")
                     self.dbHelper.saveMessages(failedMsgs)
                 except DBOpFailed, msg:
                     self.logger.log_error(msg)
@@ -79,11 +80,10 @@ class Main:
                 self.logger.log_operation("All messages dispatched successfully!")
 
             try:
+                self.logger.log_operation("saving the currently parsed active nodes into the database")
                 self.dbHelper.saveActiveNodes(currActiveNodes)
-                self.logger.log_operation("Successfully Saved Active Nodes")
             except DBOpFailed, msg:
                 self.logger.log_error(msg)
-            self.logger.log_debug("===================================  Service Ended  ===================================")
         else:
             self.logger.log_error("shell execution failed!")
 
