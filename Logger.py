@@ -7,7 +7,7 @@ class Logger(ILogger):
     def __init__(self):
         self.logger = logging.getLogger()
         self.FILENAME = "log-" + str(datetime.date.today()) + ".txt"
-        logging.basicConfig(filename=self.FILENAME, level=logging.INFO, format=format('%(levelname)s %(asctime)s %(message)s'))
+        logging.basicConfig(filename=self.FILENAME, level=logging.INFO, format=format('%(process)d %(levelname)s %(asctime)s %(message)s'))
 
     def getPath(self):
         return self.FILENAME

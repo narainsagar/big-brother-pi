@@ -8,7 +8,7 @@ class CURLMessageFactory:
     def createNodeMsg(self, nodeList):
         curlMsg = CURLMessage()
         curlMsg.setHeaders(['Content-Type: application/json'])
-        curlMsg.setPath(Config.serverAddress)
+        curlMsg.setPath(Config.NODE_ADDR)
         nodeDict = []
         for node in nodeList:
             nodeDict.append(node.__dict__)
@@ -19,7 +19,7 @@ class CURLMessageFactory:
     def createNodeMsgFromMultipleMsgs(self, msgList):
         curlMsg = CURLMessage()
         curlMsg.setHeaders(['Content-Type: application/json'])
-        curlMsg.setPath(Config.serverAddress)
+        curlMsg.setPath(Config.NODE_ADDR)
         msgBodyList = []
         for msg in msgList:
             msgBodyList.append(msg.getBody())

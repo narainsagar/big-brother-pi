@@ -1,4 +1,6 @@
 class Config(object):
-    serverAddress="http://localhost:9000/api/records/all"
-    CMessageLen = ""
-    LogSendingDur= 3600
+    BASE_ADDR     = "http://localhost:9000"
+    NODE_ADDR     = BASE_ADDR + "/api/records/all"
+    LOG_ADDR      = BASE_ADDR + "/api/records/getlog"
+    MAX_MSG_LEN   = ""
+    SEND_DURATION = 3600
