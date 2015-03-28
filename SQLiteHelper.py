@@ -81,3 +81,7 @@ class SQLiteHelper(IDBHelper):
             return msgList
         except Exception, msg:
             raise DBOpFailed(msg)
+
+
+    def __del__(self):
+        self.conn.close()

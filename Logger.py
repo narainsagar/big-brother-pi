@@ -6,12 +6,15 @@ class Logger(ILogger):
 
     def __init__(self):
         self.logger = logging.getLogger()
-        LOG_FILENAME = "log-" + str(datetime.date.today()) + ".txt"
-        logging.basicConfig(filename=LOG_FILENAME, level=logging.INFO, format=format('%(levelname)s %(asctime)s %(message)s'))
-        self.logger.info("service started")
+        self.FILENAME = "log-" + str(datetime.date.today()) + ".txt"
+        logging.basicConfig(filename=self.FILENAME, level=logging.INFO, format=format('%(levelname)s %(asctime)s %(message)s'))
 
-    def returnLogFile(self):
-        return ("log-" + str(datetime.date.today()) + ".txt")
+    def getPath(self):
+        return self.FILENAME
+
+    def empty(self):
+        with open(self.FILENAME, 'w') as logFile:
+            pass
 
     def log_error(self, text):
         self.logger.error(text)
@@ -21,6 +24,3 @@ class Logger(ILogger):
 
     def log_debug(self, text):
         self.logger.debug(text)
-
-    def __del__(self):
-        self.logger.info("service ended\n")
