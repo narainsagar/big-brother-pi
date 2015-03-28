@@ -9,6 +9,7 @@ from ServiceExceptions import DispatcherFailed, ParserFailed, DBOpFailed
 import logging
 from Logger import Logger
 from Config import Config
+import sys
 
 class Main:
     def __init__(self, shellHandler, parser, dbHelper, logger):
@@ -30,13 +31,15 @@ class Main:
                 self.logger.log_operation("Parsing fing output")
                 currActiveNodes = self.parser.parse(shellLog)
             except ParserFailed, msg:
-                self.logger.log_error(msg)
+                self.logger.log_error("service ended with exception: " + msg+"\n")
+                sys.exit(1)
 
             try:
                 self.logger.log_operation("fetching previous active nodes from database")
                 prevActiveNodes = self.dbHelper.getActiveNodes()
             except DBOpFailed, msg:
-                self.logger.log_error(msg)
+                self.logger.log_error("service ended with exception: " + msg+"\n")
+                sys.exit(1)
 
             nodesDown = self.__getNodesDown(currActiveNodes, prevActiveNodes)
             nodesUp = self.__getNodesUp(currActiveNodes, prevActiveNodes)
@@ -85,12 +88,14 @@ class Main:
                 self.logger.log_operation("saving the currently parsed active nodes into the database")
                 self.dbHelper.saveActiveNodes(currActiveNodes)
             except DBOpFailed, msg:
-                self.logger.log_error(msg)
+                self.logger.log_error("service ended with exception: " + msg+"\n")
+                sys.exit(1)
 
         else:
-            self.logger.log_error("shell execution failed!")
+            self.logger.log_error("service ended with exception: shell execution failed!\n")
+            sys.exit(1)
 
-        self.logger.log_operation("service ended");
+        self.logger.log_operation("service ended\n")
 
 
     def __getNodesUp(self, currActiveNodes, prevActiveNodes):
