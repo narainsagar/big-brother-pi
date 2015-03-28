@@ -20,7 +20,7 @@ class Ping:
         try:
             c.perform()
         except pycurl.error, msg:
-            self.logger.log_error(msg)
+            self.logger.log_error(msg + "\n")
         else:
             self.logger.empty()
         finally:
