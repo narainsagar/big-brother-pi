@@ -1,5 +1,4 @@
 #!/bin/bash
-echo "hello world"
 #generate keys
 #ssh into raspberry
 #copy python source files
@@ -15,9 +14,13 @@ echo '***************Done creating new directory in /var/www/ as big-brother-pi'
 
 
 echo '***************start coping python and bash files in /var/www/big-brother-pi'
-cp /home/pi/Downloads/*.py /var/www/big-brother-pi/
-cp /home/pi/Downloads/*.sh /var/www/big-brother-pi/
+cd /var/www/big-brother-pi
+git clone https://talib_570@bitbucket.org/mashhoodr/big-brother-pi.git
 echo '***************Done coping files'
+
+echo '***************start changing directory permissions'
+sudo chmod 644 /var/www/
+echo '***************Done changing /var/www/ rights to 777'
 
 echo '***************Start updating apt-get'
 sudo apt-get update
