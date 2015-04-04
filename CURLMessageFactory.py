@@ -5,6 +5,7 @@ import time
 from Config import Config
 
 class CURLMessageFactory:
+    #creates a single node message
     def createNodeMsg(self, nodeList):
         curlMsg = CURLMessage()
         curlMsg.setHeaders(['Content-Type: application/json'])
@@ -15,7 +16,7 @@ class CURLMessageFactory:
         JSONDict = {'created': str(time.time()), 'type' : 'node', 'nodes': nodeDict}
         curlMsg.setBody(json.dumps(JSONDict))
         return curlMsg
-
+    #merges all node messgaes to a single node message
     def createNodeMsgFromMultipleMsgs(self, msgList):
         curlMsg = CURLMessage()
         curlMsg.setHeaders(['Content-Type: application/json'])

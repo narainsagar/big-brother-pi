@@ -4,9 +4,9 @@ from CURLMessage import CURLMessage
 from ServiceExceptions import DBOpFailed
 import sqlite3
 import os
-
+from Constants import Constants
 class SQLiteHelper(IDBHelper):
-    db_path = "service.db"
+    db_path = Constants.SQLite_DB_Path
 
     def __init__(self):
         pass
