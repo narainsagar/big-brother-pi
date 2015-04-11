@@ -1,3 +1,5 @@
+from Config import Config
+
 class Node:
     def __init__(self):
         pass
@@ -7,9 +9,10 @@ class Node:
         self.mac_addr = ""
         self.node_status = 0
         self.manufacturer_name = ""
+        self.companyId = Config.COMPANY_ID
 
     def __str__(self):
-        return "ip_addr: " + self.ip_addr + "; mac_addr: " + self.mac_addr + "; manufacturer_name: " + self.manufacturer_name
+        return "ip_addr: " + self.ip_addr + "; mac_addr: " + self.mac_addr + "; manufacturer_name: " + self.manufacturer_name + "; company_id: " + self.companyId
 
     def __repr__(self):
         return self.__str__()
