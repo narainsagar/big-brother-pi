@@ -14,7 +14,7 @@ class Ping:
         c.setopt(c.WRITEFUNCTION, buf.write)
         c.setopt(c.FAILONERROR, True)
         c.setopt(c.URL, Config.LOG_ADDR)
-        c.setopt(c.HTTPPOST,[ ("log", (c.FORM_FILE, Constants.LOG_FILE_NAME)) ])
+        c.setopt(c.HTTPPOST,[ ("log", (c.FORM_FILE, Constants.LOG_FILE_NAME)), ("company_id", Config.COMPANY_ID) ])
         c.setopt(c.VERBOSE, 1)
         try:
             c.perform()

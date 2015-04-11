@@ -13,7 +13,7 @@ class CURLMessageFactory:
         nodeDict = []
         for node in nodeList:
             nodeDict.append(node.__dict__)
-        JSONDict = {'created': str(time.time()), 'type' : 'node', 'nodes': nodeDict}
+        JSONDict = {'created': str(time.time()), 'type': 'node', 'company_id': Config.COMPANY_ID, 'nodes': nodeDict}
         curlMsg.setBody(json.dumps(JSONDict))
         return curlMsg
     #merges all node messgaes to a single node message
