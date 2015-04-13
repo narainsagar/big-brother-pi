@@ -6,6 +6,9 @@ from Logger import Logger
 from Constants import Constants
 
 class Ping:
+    def __init__(self, logger):
+        self.logger = logger
+
     #sends the log file to server and clears the log file
     def ping(self):
         buf = cStringIO.StringIO()
@@ -14,7 +17,7 @@ class Ping:
         c.setopt(c.WRITEFUNCTION, buf.write)
         c.setopt(c.FAILONERROR, True)
         c.setopt(c.URL, Config.LOG_ADDR)
-        c.setopt(c.HTTPPOST,[ ("log", (c.FORM_FILE, Constants.LOG_FILE_NAME)) ])
+        c.setopt(c.HTTPPOST,[ ("log", (c.FORM_FILE, self.logger.getPath())), ("company_id", Config.COMPANY_ID) ])
         c.setopt(c.VERBOSE, 1)
         try:
             c.perform()
