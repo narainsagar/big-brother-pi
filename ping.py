@@ -1,9 +1,10 @@
-import pycurl
 import cStringIO
-from Config import Config
-import time
-from Logger import Logger
-from Constants import Constants
+
+import pycurl
+
+from base import Config
+from core import Logger
+
 
 class Ping:
     def __init__(self, logger):

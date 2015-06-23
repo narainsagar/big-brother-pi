@@ -1,8 +1,9 @@
-from CURLMessage import CURLMessage
-from Base import Node
 import json
 import time
-from Config import Config
+
+from core import CURLMessage
+from base import Config
+
 
 class CURLMessageFactory:
     #creates a single node message

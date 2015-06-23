@@ -1,15 +1,8 @@
-from FingParser import FingParser
-from FingShellHandler import FingShellHandler
-from SQLiteHelper import SQLiteHelper
-from Base import Node, NODE_STATUS
-from CURLMessage import CURLMessage
-from CURLMessageFactory import CURLMessageFactory
-from MessageDispatcher import MessageDispatcher
-from ServiceExceptions import DispatcherFailed, ParserFailed, DBOpFailed
-import logging
-from Logger import Logger
-from Config import Config
 import sys
+
+from core import *
+from core.ServiceExceptions import *
+
 
 class Main:
     def __init__(self, shellHandler, parser, dbHelper, logger):

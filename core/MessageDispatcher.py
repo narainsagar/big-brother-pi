@@ -1,9 +1,8 @@
-from CURLMessage import CURLMessage
-from ServiceExceptions import DispatcherFailed
-import pycurl
 import cStringIO
-from Config import Config
-import time
+
+import pycurl
+
+from core.ServiceExceptions import DispatcherFailed
 
 
 class MessageDispatcher:
