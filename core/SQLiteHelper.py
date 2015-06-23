@@ -1,11 +1,10 @@
 import sqlite3
 
-from Base import Node
+from base.Base import Node
 from interfaces import IDBHelper
 from CURLMessage import CURLMessage
 from core.ServiceExceptions import DBOpFailed
 from base import Constants
-
 
 class SQLiteHelper(IDBHelper):
     db_path = Constants.SQLite_DB_Path

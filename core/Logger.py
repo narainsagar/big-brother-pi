@@ -1,9 +1,9 @@
 from abc import ABCMeta, abstractmethod
-from ILogger import ILogger
+from interfaces import ILogger
 import logging
 import datetime
-class Logger(ILogger):
 
+class Logger(ILogger):
     #sets the logger configurations
     def __init__(self):
         self.logger = logging.getLogger()

@@ -1,9 +1,8 @@
 import os
 
-from Base import ShellLog
+from base import *
+from base.Base import ShellLog
 from interfaces import IShellHandler
-from base import Constants
-
 
 class FingShellHandler(IShellHandler):
     def execute(self):
