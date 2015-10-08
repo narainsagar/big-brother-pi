@@ -1,4 +1,4 @@
-from Base import Node, NODE_STATUS
+from base import Node, NODE_STATUS
 from interfaces import IParser
 from core.ServiceExceptions import ParserFailed
 

@@ -1,6 +1,7 @@
 import sys
 
 from core import *
+from base import *
 from core.ServiceExceptions import *
 
 
