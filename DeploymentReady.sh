@@ -10,7 +10,7 @@ ssh pi@$1  << ENDHERE
 ENDHERE
 ssh $1  << ENDHERE
 	echo '***************Started copying files'
-	git clone https://Suleman-ML@bitbucket.org/mashhoodr/big-brother-pi.git
+	git clone https://github.com/marketlytics/big-brother-pi.git
 	echo '***************Done coping files'
 
 	echo '***************Start updating apt-get'
