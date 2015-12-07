@@ -49,7 +49,7 @@ class Main:
 
             if nodeList.__len__() > 0:
                 msgList.append(msgFactory.createNodeMsg(nodeList))
-            #trying to fetch previous failed message from data base
+            #trying to fetch previous failed message from database
             try:
                 self.logger.log_operation("fetching previous failed messages from database")
                 prevMessages = self.dbHelper.getMessages()

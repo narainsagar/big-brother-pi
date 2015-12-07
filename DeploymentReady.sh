@@ -11,35 +11,35 @@ ENDHERE
 ssh $1  << ENDHERE
 	echo '***************Started copying files'
 	git clone https://github.com/marketlytics/big-brother-pi.git
-	echo '***************Done coping files'
+	echo '***************Done copying files'
 
 	echo '***************Start updating apt-get'
 	sudo apt-get update
-	echo '***************Done Update'
+	echo '***************Done update apt-get'
 
 	echo '***************start installing sqlite3'
 	sudo apt-get install sqlite3
-	echo '***************Done sqlite3'
+	echo '***************Done install sqlite3'
 
 	echo '***************start installing git'
 	sudo apt-get install git
-	echo '***************Done git'
+	echo '***************Done install git'
 
 	echo '***************start installing libcurl4-openssl-dev'
 	sudo apt-get install -y libcurl4-openssl-dev
-	echo '***************Done libcurl4-openssl-dev'
+	echo '***************Done install libcurl4-openssl-dev'
 
 	echo '***************start installing libcurl4-gnutls-dev librtmp-dev'
 	sudo apt-get install -y libcurl4-gnutls-dev librtmp-dev
-	echo '***************Done libcurl4-gnetls-dev librtmp-dev'
+	echo '***************Done install libcurl4-gnetls-dev librtmp-dev'
 
 	echo '***************start installing pycurl'
 	sudo apt-get install python-pycurl
-	echo '***************Done pycurl'
+	echo '***************Done install pycurl'
 
 	echo '***************start downloading fing module'
 	wget http://www.overlooksoft.com/packages/download?plat=arm
-	echo ' **************Done DOwnload deb'
+	echo ' **************Done download deb'
 
 	echo '***************start installing expect'
 	mv download\?plat\=arm overlook-fing.deb

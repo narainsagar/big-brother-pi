@@ -29,7 +29,7 @@ The purpose of this script is to notify current active nodes inside a network pe
 
 #####transfer all the files to raspberry pi:
 
-    clone the repo or either download the zip from the githib
+    clone the repo or either download the zip from the github
     
     from the terminal, use scp command to copy the files to the raspberry. for example:
     scp -r path/to/project/directory raspberry@192.168.0.11:/destination
@@ -68,6 +68,3 @@ To automate the whole process, there is a bash script DeployementReady.sh presen
     install all the dependencies
     
     set up cron jobs to be executed at a fixed interval (send node data every 15 minutes - send log data every hour)
-    
-    
-
